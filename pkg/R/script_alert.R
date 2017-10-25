@@ -28,37 +28,14 @@ set_up_script_alert <- function(){
 #' @return message subject
 #' @export
 initial_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
-  info <- readLines(con = "~/.secret_stuff")[1]
-  if(is.null(address_to)) address_to <- readLines(con = "~/.secret_stuff")[2]
-  address_from <- as.character(strsplit(info, ":")[[1]][1])
-  hostname <- system(command = 'hostname', intern = T)
-  username <- system(command = 'id -un', inter = T)
-  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   start_time <- Sys.time()
-  if(is.null(message_subject)){
-    message_subject <- paste('job ', script_name, 'on ', hostname, sep = '')
-  }
-  writeLines(text = paste('From: "', hostname, '" <', address_from, '>\n', 
-                          'To: <', address_to, '>\n',
-                          'Subject: ', message_subject, '\n',
-                          'Message-ID: <', username, '@', hostname, '>\n\n',
-                          'Your script ', script_name, 
-                          'began running on ', hostname, 
-                          ' at ', start_time, '.\n', text, 
-                          sep = ''), con = 'message.txt')
-  system(
-    paste("curl",
-          "--url 'smtps://smtp.gmail.com:465'", 
-          "--ssl-reqd", 
-          "--mail-from", address_from,
-          "--mail-auth", address_from,
-          "--mail-rcpt", address_to,
-          "--upload-file message.txt",
-          "--user", info,
-          "--insecure")
-  )
-  system('rm message.txt')
-  return(message_subject)
+  initial_text <- paste('Your script ', script_name, 
+                        'began running on ', hostname, 
+                        ' at ', start_time, '.\n', text, 
+                        sep = '')
+  msg_subj <- gen_alert(text = initial_text, address_to = address_to, 
+                        script_name = script_name, message_subject = message_subject)
+  return(msg_subj)
 }
 
 #' Error email alert
@@ -71,37 +48,14 @@ initial_alert <- function(text = NULL, address_to = NULL, script_name = NULL, me
 #' @return message subject
 #' @export
 error_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
-  info <- readLines(con = "~/.secret_stuff")[1]
-  if(is.null(address_to)) address_to <- readLines(con = "~/.secret_stuff")[2]
-  address_from <- as.character(strsplit(info, ":")[[1]][1])
-  hostname <- system(command = 'hostname', intern = T)
-  username <- system(command = 'id -un', inter = T)
-  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   crash_time <- Sys.time()
-  if(is.null(message_subject)){
-    message_subject <- paste('job ', script_name, 'on ', hostname, sep = '')
-  }
-  writeLines(text = paste('From: "', hostname, '" <', address_from, '>\n', 
-                          'To: <', address_to, '>\n',
-                          'Subject: ', message_subject, '\n',
-                          'Message-ID: <', username, '@', hostname, '>\n\n',
-                          'Your script ', script_name, 
-                          'has thrown an error on ', hostname, 
-                          ' at ', crash_time, '. Sorry.\n\n', text, 
-                          sep = ''), con = 'message.txt')
-  system(
-    paste("curl",
-          "--url 'smtps://smtp.gmail.com:465'", 
-          "--ssl-reqd", 
-          "--mail-from", address_from,
-          "--mail-auth", address_from,
-          "--mail-rcpt", address_to,
-          "--upload-file message.txt",
-          "--user", info,
-          "--insecure")
-  )
-  system('rm message.txt')
-  return(message_subject)
+  error_text <-  paste('Your script ', script_name, 
+                       'has thrown an error on ', hostname, 
+                       ' at ', crash_time, '. Sorry.\n\n', text, 
+                       sep = '')
+  msg_subj <- gen_alert(text = error_text, address_to = address_to, 
+                        script_name = script_name, message_subject = message_subject)
+  return(msg_subj)
 }
 
 #' Completion email alert
@@ -114,37 +68,14 @@ error_alert <- function(text = NULL, address_to = NULL, script_name = NULL, mess
 #' @return message subject
 #' @export
 finish_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
-  info <- readLines(con = "~/.secret_stuff")[1]
-  if(is.null(address_to)) address_to <- readLines(con = "~/.secret_stuff")[2]
-  address_from <- as.character(strsplit(info, ":")[[1]][1])
-  hostname <- system(command = 'hostname', intern = T)
-  username <- system(command = 'id -un', inter = T)
-  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   finish_time <- Sys.time()
-  if(is.null(message_subject)){
-    message_subject <- paste('job ', script_name, 'on ', hostname, sep = '')
-  }
-  writeLines(text = paste('From: "', hostname, '" <', address_from, '>\n', 
-                          'To: <', address_to, '>\n',
-                          'Subject: ', message_subject, '\n',
-                          'Message-ID: <', username, '@', hostname, '>\n\n',
-                          'Your script ', script_name, 
-                          'has completed on ', hostname, 
-                          ' at ', finish_time, '.\n\n', text, 
-                          sep = ''), con = 'message.txt')
-  system(
-    paste("curl",
-          "--url 'smtps://smtp.gmail.com:465'", 
-          "--ssl-reqd", 
-          "--mail-from", address_from,
-          "--mail-auth", address_from,
-          "--mail-rcpt", address_to,
-          "--upload-file message.txt",
-          "--user", info,
-          "--insecure")
-  )
-  system('rm message.txt')
-  return(message_subject)
+  finish_text <- paste('Your script ', script_name, 
+                'has completed on ', hostname, 
+                ' at ', finish_time, '.\n\n', text, 
+                sep = '')
+  msg_subj <- gen_alert(text = finish_text, address_to = address_to, 
+                        script_name = script_name, message_subject = message_subject)
+  return(msg_subj)
 }
 
 #' Generic email alert
@@ -168,7 +99,7 @@ gen_alert <- function(text = NULL, address_to = NULL, script_name = NULL, messag
     message_subject <- paste('job ', script_name, 'on ', hostname, sep = '')
   }
   if(is.null(text)) text <- "No text supplied to gen_alert()."
-  writeLines(text = paste('From: "', hostname, '" <', address_from, '>\n', 
+  writeLines(text = paste('From: "', username, '@', hostname, '" <', address_from, '>\n', 
                           'To: <', address_to, '>\n',
                           'Subject: ', message_subject, '\n',
                           'Message-ID: <', username, '@', hostname, '>\n\n',
