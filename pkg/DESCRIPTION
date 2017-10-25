@@ -1,11 +1,11 @@
 Package: script.alert
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Email alerts on a remote server for BATCH R scripts
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Henry Scharf
+Maintainer: Henry Scharf <henryrscharf@gmail.com>
+Description: This package can be used to sets up email alerts on a remote server for BATCH R scripts. The method is not secure, and should only be used on servers with a small number of users, such as might be found in a lab on a university campus.
+License: GNU General Public License
 Encoding: UTF-8
 LazyData: true
+RoxygenNote: 6.0.1
