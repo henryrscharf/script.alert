@@ -29,6 +29,8 @@ set_up_script_alert <- function(){
 #' @export
 initial_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
   start_time <- Sys.time()
+  hostname <- system(command = 'hostname', intern = T)
+  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   initial_text <- paste('Your script ', script_name, 
                         'began running on ', hostname, 
                         ' at ', start_time, '.\n', text, 
@@ -49,6 +51,8 @@ initial_alert <- function(text = NULL, address_to = NULL, script_name = NULL, me
 #' @export
 error_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
   crash_time <- Sys.time()
+  hostname <- system(command = 'hostname', intern = T)
+  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   error_text <-  paste('Your script ', script_name, 
                        'has thrown an error on ', hostname, 
                        ' at ', crash_time, '. Sorry.\n\n', text, 
@@ -69,6 +73,8 @@ error_alert <- function(text = NULL, address_to = NULL, script_name = NULL, mess
 #' @export
 finish_alert <- function(text = NULL, address_to = NULL, script_name = NULL, message_subject = NULL){
   finish_time <- Sys.time()
+  hostname <- system(command = 'hostname', intern = T)
+  if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   finish_text <- paste('Your script ', script_name, 
                 'has completed on ', hostname, 
                 ' at ', finish_time, '.\n\n', text, 
