@@ -113,7 +113,7 @@ gen_alert <- function(text = NULL, address_to = NULL, script_name = NULL, messag
   system(
     paste("curl",
           "--url 'smtps://smtp.gmail.com:465'", 
-          "--ssl-reqd", 
+          # "--ssl-reqd", 
           "--mail-from", address_from,
           "--mail-auth", address_from,
           "--mail-rcpt", address_to,
