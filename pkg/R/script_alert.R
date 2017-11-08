@@ -102,7 +102,7 @@ gen_alert <- function(text = NULL, address_to = NULL, script_name = NULL, messag
   if(!is.null(script_name)) script_name <- paste(script_name, " ", sep = "")
   finish_time <- Sys.time()
   if(is.null(message_subject)){
-    message_subject <- paste('job ', script_name, 'on ', hostname, sep = '')
+    message_subject <- paste('job ', script_name, 'on ', hostname, ' started at ', Sys.time(), sep = '')
   }
   if(is.null(text)) text <- "No text supplied to gen_alert()."
   writeLines(text = paste('From: "', username, '@', hostname, '" <', address_from, '>\n', 
